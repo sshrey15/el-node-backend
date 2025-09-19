@@ -54,8 +54,8 @@ export const createInventoryItem = async (req, res) => {
     const serialNumber = (itemCount + 1).toString().padStart(3, '0'); // Formats as 001, 002, etc.
 
     // 4. Construct the unique code
-    const generatedUniqueCode = `EHS-${category.code}-${product.uniqueCode}-${yearOfPurchase}-${serialNumber}`;
-
+    const yearShort = yearOfPurchase.toString().slice(-2); // Get last 2 digits
+    const generatedUniqueCode = `EHS-${category.code}-${product.uniqueCode}-${yearShort}-${serialNumber}`;
     // 5. Create the new inventory item
     const inventoryItem = await prisma.inventoryItem.create({
       data: {
