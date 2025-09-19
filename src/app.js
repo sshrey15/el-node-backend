@@ -15,7 +15,7 @@ const app = express();
 const corsOptions = {
     // Replace the URL below with the exact URL of your deployed frontend.
     // This allows only your frontend to access the API.
-    origin: 'https://your-frontend-domain.vercel.app', 
+    origin: 'https://el-node.vercel.app/', 
     optionsSuccessStatus: 200
 };
 
