@@ -11,8 +11,15 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
-// Correct CORS configuration to allow credentials from the specific origin
-app.use(cors());
+// Correct CORS configuration
+const corsOptions = {
+    // Replace the URL below with the exact URL of your deployed frontend.
+    // This allows only your frontend to access the API.
+    origin: 'https://your-frontend-domain.vercel.app', 
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
