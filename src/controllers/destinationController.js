@@ -2,7 +2,16 @@ import prisma from '../utils/prisma.js';
 
 export const getDestinations = async (req, res) => {
   try {
-    const destinations = await prisma.destination.findMany({ include: { products: true } });
+    const destinations = await prisma.destination.findMany({ 
+      include: { 
+        inventoryItems: {
+          include: {
+            product: true,
+            category: true
+          }
+        }
+      } 
+    });
     res.json(destinations);
   } catch (err) {
     res.status(500).json({ error: err.message });

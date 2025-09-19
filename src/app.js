@@ -11,7 +11,12 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.use(cors());
+// Correct CORS configuration to allow credentials from the specific origin
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
+
 app.use(express.json());
 
 app.get("/", (req, res) => { res.send("El-Node Inventory API is running") });
@@ -23,5 +28,5 @@ app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
 
 app.listen(port, () => {
-	console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
