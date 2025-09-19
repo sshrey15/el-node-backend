@@ -1,11 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import productRoutes from "./routes/productRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import destinationRoutes from "./routes/destinationRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import inventoryRoutes from "./routes/inventoryRoutes.js";
+// ... (other imports)
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -13,9 +9,9 @@ const app = express();
 
 // Correct CORS configuration
 const corsOptions = {
-    // Replace the URL below with the exact URL of your deployed frontend.
-    // This allows only your frontend to access the API.
-    origin: 'https://el-node.vercel.app/', 
+    // This is the source of the error.
+    // The trailing slash must be removed.
+    origin: 'https://el-node.vercel.app', 
     optionsSuccessStatus: 200
 };
 
