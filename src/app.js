@@ -1,21 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-// ... (other imports)
+import productRoutes from "./routes/productRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import destinationRoutes from "./routes/destinationRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
-// Correct CORS configuration
-const corsOptions = {
-    // This is the source of the error.
-    // The trailing slash must be removed.
-    origin: 'https://el-node.vercel.app', 
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
+// Correct CORS configuration to allow credentials from the specific origin
+app.use(cors());
 
 app.use(express.json());
 
