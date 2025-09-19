@@ -46,7 +46,7 @@ export const createInventoryItem = async (req, res) => {
     if (!category) {
         return res.status(404).json({ error: 'Category not found.' });
     }
-
+//shrey
     // 3. Determine the serial number by counting existing items for this product
     const itemCount = await prisma.inventoryItem.count({
         where: { productId: productId }
