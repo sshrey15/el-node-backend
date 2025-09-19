@@ -5,9 +5,10 @@ import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import destinationRoutes from "./routes/destinationRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const app = express();
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/inventory", inventoryRoutes);
 
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);

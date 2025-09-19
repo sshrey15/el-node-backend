@@ -34,22 +34,39 @@ model Destination {
   id          String    @id @default(uuid())
   name        String
   description String?
-  products    Product[]
+  inventoryItems InventoryItem[]
 }
 
+
 model Product {
-  id             String   @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
-  uniqueCode     String   @unique
-  categoryId     String
-  destinationId  String
-  yearOfPurchase Int
+  uniqueCode     String          @unique
   description    String?
-  status         ProductStatus
-  category       Category @relation(fields: [categoryId], references: [id])
-  destination    Destination @relation(fields: [destinationId], references: [id])
-  userId         String?
-  user           User?    @relation(fields: [userId], references: [id])
+  image          String?
+  createdAt      DateTime        @default(now())
+  
+  categoryId     String
+  category       Category        @relation(fields: [categoryId], references: [id])
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  
+  inventoryItems InventoryItem[]
+}
+
+model InventoryItem {
+  id              String      @id @default(uuid())
+  uniqueCode      String      @unique
+  status          ProductStatus  @default(active)
+  yearOfPurchase  Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  productId       String
+  product         Product     @relation(fields: [productId], references: [id])
+  
+  destinationId   String?
+  destination     Destination? @relation(fields: [destinationId], references: [id])
 }
 
 enum ProductStatus {
