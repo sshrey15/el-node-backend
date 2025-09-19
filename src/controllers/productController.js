@@ -1,5 +1,7 @@
 import prisma from '../utils/prisma.js';
 
+// @desc    Get all products
+// @route   GET /api/products
 export const getProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany({
@@ -19,6 +21,8 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// @desc    Create a new product
+// @route   POST /api/products
 export const createProduct = async (req, res) => {
   try {
     const {
@@ -28,12 +32,11 @@ export const createProduct = async (req, res) => {
       image,
       categoryId,
       userId,
-      inventoryItems, // Expect an array of inventory items
     } = req.body;
 
-    // Basic validation
-    if (!inventoryItems || !Array.isArray(inventoryItems) || inventoryItems.length === 0) {
-      return res.status(400).json({ error: 'Product must have at least one inventory item.' });
+    // Basic validation to ensure required fields are present
+    if (!name || !uniqueCode || !categoryId || !userId) {
+        return res.status(400).json({ error: 'Missing required fields: name, uniqueCode, categoryId, userId' });
     }
 
     const product = await prisma.product.create({
@@ -44,19 +47,18 @@ export const createProduct = async (req, res) => {
         image,
         categoryId,
         userId,
-  
-      },
-      include: {
-        inventoryItems: true,
       },
     });
 
     res.status(201).json(product);
   } catch (err) {
+    // Handle potential errors, like a non-unique 'uniqueCode'
     res.status(400).json({ error: err.message });
   }
 };
 
+// @desc    Update an existing product
+// @route   PUT /api/products/:id
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,12 +73,17 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    // Note: Deleting a product will fail if inventory items are associated with it.
+    // You must delete or reassign the inventory items first.
     await prisma.product.delete({ where: { id } });
-    res.json({ message: 'Product deleted' });
+    res.json({ message: 'Product deleted successfully' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
+
