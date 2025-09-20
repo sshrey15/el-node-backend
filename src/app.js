@@ -11,10 +11,37 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
+// --- START: MODIFIED CORS CONFIGURATION ---
 
-// Correct CORS configuration to allow credentials from the specific origin
-app.use(express.json());
-app.use(cors());
+// 1. Define your allowed origins
+const allowedOrigins = [
+  'http://localhost:3000', // Your local development frontend
+  'https://el-node-module1.vercel.app' // Your deployed frontend
+];
+
+// 2. Create CORS options
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // This allows cookies to be sent
+};
+
+// 3. Use the new CORS options
+app.use(cors(corsOptions));
+
+// --- END: MODIFIED CORS CONFIGURATION ---
+
+
+// Increase the body limit for JSON payloads to handle base64 images
+app.use(express.json({ limit: '5mb' }));
+
 
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
