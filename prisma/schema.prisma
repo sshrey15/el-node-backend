@@ -1,80 +1,80 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+  // This is your Prisma schema file,
+  // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+  datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
 
-model User {
-  id       String   @id @default(uuid())
-  username String   @unique
-  password String
-  role     UserRole
-  products Product[]
-}
+  model User {
+    id       String   @id @default(uuid())
+    username String   @unique
+    password String
+    role     UserRole
+    products Product[]
+  }
 
-enum UserRole {
-  admin
-  user
-}
+  enum UserRole {
+    admin
+    user
+  }
 
-model Category {
-  id    String   @id @default(uuid())
-  name  String
-  code  String   @unique
-  inventoryItems InventoryItem[]
-  products Product[]
-}
+  model Category {
+    id    String   @id @default(uuid())
+    name  String
+    code  String   @unique
+    inventoryItems InventoryItem[]
+    products Product[]
+  }
 
-model Destination {
-  id          String    @id @default(uuid())
-  name        String
-  description String?
-  inventoryItems InventoryItem[]
-}
+  model Destination {
+    id          String    @id @default(uuid())
+    name        String
+    description String?
+    inventoryItems InventoryItem[]
+  }
 
 
-model Product {
-  id             String          @id @default(uuid())
-  name           String
-  uniqueCode     String          @unique
-  description    String?
-  image          String?
-  createdAt      DateTime        @default(now())
-  
-  categoryId     String
-  category       Category        @relation(fields: [categoryId], references: [id])
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
-  
-  inventoryItems InventoryItem[]
-}
+  model Product {
+    id             String          @id @default(uuid())
+    name           String
+    uniqueCode     String          @unique
+    description    String?
+    image          String?
+    createdAt      DateTime        @default(now())
+    
+    categoryId     String
+    category       Category        @relation(fields: [categoryId], references: [id])
+    userId         String
+    user           User            @relation(fields: [userId], references: [id])
+    
+    inventoryItems InventoryItem[]
+  }
 
-model InventoryItem {
-  id              String      @id @default(uuid())
-  uniqueCode      String      @unique
-  status          ProductStatus  @default(active)
-  yearOfPurchase  Int
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  
-  productId       String
-  product         Product     @relation(fields: [productId], references: [id])
-  categoryId      String
-  category        Category    @relation(fields: [categoryId], references: [id])
-  destinationId   String?
-  destination     Destination? @relation(fields: [destinationId], references: [id])
-}
+  model InventoryItem {
+    id              String      @id @default(uuid())
+    uniqueCode      String      @unique
+    status          ProductStatus  @default(active)
+    yearOfPurchase  Int
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+    
+    productId       String
+    product         Product     @relation(fields: [productId], references: [id])
+    categoryId      String
+    category        Category    @relation(fields: [categoryId], references: [id])
+    destinationId   String?
+    destination     Destination? @relation(fields: [destinationId], references: [id])
+  }
 
-enum ProductStatus {
-  active
-  maintenance
-  damaged
-  discarded
-  missing
-}
+  enum ProductStatus {
+    active
+    maintenance
+    damaged
+    discarded
+    missing
+  }
