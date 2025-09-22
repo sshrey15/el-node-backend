@@ -10,20 +10,26 @@ export const getCategories = async (req, res) => {
 };
 
 export const createCategory = async (req, res) => {
+
   try {
     const { name, code } = req.body;
-    const category = await prisma.category.create({ data: { name, code } });
 
-    await prisma.auditLog.create({
+    const category = await prisma.category.create({ data: { name, code } });
+    console.log("User", req.user)
+    console.log("Categoires", category)
+    const auditLog = await prisma.auditLog.create({
       data: {
         action: 'CREATE',
-        message: `User '${req.user.username}' created category '${category.name}' (${category.code}).`,
+        message: `User  created category '${category.name}' (${category.code}).`,
         entityType: 'CATEGORY',
-        entityId: category.id, // <-- FIX: Added the ID of the newly created category
-        userId: req.user.id,
+        entityId: category.id,
+        userId: req.user.userId,
       },
+
+      
     });
-    res.status(201).json(category);
+    console.log("Audit Log", auditLog)  
+    res.status(201).json(category, auditLog);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

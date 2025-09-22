@@ -3,12 +3,13 @@
 
 import { Router } from "express";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "../controllers/categoryController.js";
+import { authenticate } from "../middlewares/auth.js";
 
 const router = Router();
 
 router.route("/")
   .get(getCategories)
-  .post(createCategory);
+  .post(authenticate, createCategory);
 
 router.route("/:id")
   .put(updateCategory)
