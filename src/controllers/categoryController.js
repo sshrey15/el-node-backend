@@ -13,6 +13,16 @@ export const createCategory = async (req, res) => {
   try {
     const { name, code } = req.body;
     const category = await prisma.category.create({ data: { name, code } });
+
+    await prisma.auditLog.create({
+      data: {
+        action: 'CREATE',
+        message: `User '${req.user.username}' created category '${category.name}' (${category.code}).`,
+        entityType: 'CATEGORY',
+        entityId: category.id, // <-- FIX: Added the ID of the newly created category
+        userId: req.user.id,
+      },
+    });
     res.status(201).json(category);
   } catch (err) {
     res.status(400).json({ error: err.message });

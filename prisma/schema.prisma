@@ -16,6 +16,7 @@
     password String
     role     UserRole
     products Product[]
+    logs AuditLog[]
   }
 
   enum UserRole {
@@ -78,3 +79,32 @@
     discarded
     missing
   }
+
+  model AuditLog {
+  id         String     @id @default(cuid())
+  action     ActionType
+  message    String
+  entityType EntityType // Corrected typo
+  entityId   String     // Added missing field
+  details    Json?      // Added missing optional field
+  createdAt  DateTime   @default(now())
+
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+}
+
+enum ActionType {
+  CREATE
+  UPDATE
+  DELETE
+  MOVE_ITEM
+  CHANGE_STATUS
+}
+
+enum EntityType { // Corrected typo
+  USER
+  PRODUCT
+  CATEGORY
+  DESTINATION
+  INVENTORY_ITEM
+}
