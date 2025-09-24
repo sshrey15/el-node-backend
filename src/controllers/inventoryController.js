@@ -67,7 +67,17 @@ export const createInventoryItem = async (req, res) => {
         categoryId,
       },
     });
-    res.status(201).json(inventoryItem);
+
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action: 'CREATE',
+        message: `user ${req.user.username} created inventory item ${inventoryItem.uniqueCode}`,
+        entityType: 'INVENTORY_ITEM',
+        entityId: inventoryItem.id,
+        userId: req.user.userId,
+      }
+    })
+    res.status(201).json(inventoryItem, auditLog);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -83,6 +93,15 @@ export const updateInventoryItem = async (req, res) => {
       where: { id },
       data,
     });
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action:'UPDATE',
+        message: `user ${req.user.username} updated inventory item ${inventoryItem.uniqueCode}`,
+        entityType: 'INVENTORY_ITEM',
+        entityId: inventoryItem.id,
+        userId: req.user.userId,
+      }
+    })
     res.json(inventoryItem);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -95,7 +114,17 @@ export const deleteInventoryItem = async (req, res) => {
   try {
     const { id } = req.params;
     await prisma.inventoryItem.delete({ where: { id } });
-    res.json({ message: 'Inventory item deleted successfully' });
+
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action:'DELETE',
+        message: `user ${req.user.username} deleted inventory item with id ${id}`,
+        entityId: id,
+        entityType: 'INVENTORY_ITEM',
+        userId: req.user.userId,
+      }
+    })
+    res.json({ message: 'Inventory item deleted successfully', auditLog });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

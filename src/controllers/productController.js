@@ -55,7 +55,20 @@ export const createProduct = async (req, res) => {
       },
     });
 
-    res.status(201).json(product);
+    console.log("Product", product)
+
+
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action: 'CREATE',
+        message: `User created product '${product.name}' (${product.uniqueCode})`,
+        entityId: product.id,
+        entityType: 'PRODUCT',
+        userId: req.user.userId
+      }
+    })
+
+    res.status(201).json(product, auditLog);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -109,7 +122,7 @@ export const deleteProduct = async (req, res) => {
     // You must delete or reassign the inventory items first.
     await prisma.product.delete({ where: { id } });
     res.json({ message: 'Product deleted successfully' });
-  } catch (err) {
+  } catch (err){
     res.status(400).json({ error: err.message });
   }
 };

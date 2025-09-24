@@ -6,6 +6,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import destinationRoutes from "./routes/destinationRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
+import auditlogRoutes from "./routes/auditlogRoutes.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/destinations", destinationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/auditlogs", auditlogRoutes);
 
 app.get("/", (req, res) => { res.send("El-Node Inventory API is running") });
 

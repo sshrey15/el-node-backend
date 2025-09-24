@@ -12,7 +12,7 @@ router.route("/")
   .post(authenticate, createCategory);
 
 router.route("/:id")
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .put(authenticate, updateCategory)
+  .delete(authenticate, deleteCategory);
 
 export default router;

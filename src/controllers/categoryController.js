@@ -20,7 +20,7 @@ export const createCategory = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data: {
         action: 'CREATE',
-        message: `User  created category '${category.name}' (${category.code}).`,
+        message: `User ${req.user.username} created category '${category.name}' (${category.code}).`,
         entityType: 'CATEGORY',
         entityId: category.id,
         userId: req.user.userId,
@@ -40,7 +40,17 @@ export const updateCategory = async (req, res) => {
     const { id } = req.params;
     const { name, code } = req.body;
     const category = await prisma.category.update({ where: { id }, data: { name, code } });
-    res.json(category);
+
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action: 'UPDATE',
+        message: `User updated category '${category.name}' (${category.code}).`,
+        entityType: 'CATEGORY',
+        entityId: category.id,
+        userId: req.user.userId,
+      }
+    })
+    res.json(category, auditLog);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -50,7 +60,17 @@ export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
     await prisma.category.delete({ where: { id } });
-    res.json({ message: 'Category deleted' });
+
+    const auditLog = await prisma.auditLog.create({
+      data: {
+        action: 'DELETE',
+        message: `'${req.user.username}' deleted category with ID ${id}.`,
+        entityType: 'CATEGORY',
+        entityId: id,
+        userId: req.user.userId,
+      }
+    })
+    res.json({ message: 'Category deleted', auditLog });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
