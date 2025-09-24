@@ -11,7 +11,7 @@ import { authenticate } from '../middlewares/auth.js';
 const router = express.Router();
 
 // The upload.single() middleware processes the 'image' field from the form
-router.get('/', authenticate, getProducts);
+router.get('/',  getProducts);
 router.post('/', authenticate, upload.single('image'), createProduct);
 router.put('/:id', upload.single('image'), authenticate, updateProduct);
 router.delete('/:id', deleteProduct);
