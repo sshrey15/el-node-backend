@@ -27,7 +27,9 @@ export const getProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { name, uniqueCode, description, categoryId, userId } = req.body;
-    
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
     // Check if a file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: 'No image file uploaded' });
@@ -61,7 +63,7 @@ export const createProduct = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data:{
         action: 'CREATE',
-        message: `User created product '${product.name}' (${product.uniqueCode})`,
+        message: `User ${getuserName.username} created product '${product.name}' (${product.uniqueCode})`,
         entityId: product.id,
         entityType: 'PRODUCT',
         userId: req.user.userId
@@ -80,6 +82,9 @@ export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, uniqueCode, description, categoryId } = req.body;
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
     
     let imageUrl = req.body.image; // Assume image can be updated or remain the same
     
@@ -108,7 +113,17 @@ export const updateProduct = async (req, res) => {
       },
     });
 
-    res.json(product);
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action: 'UPDATE',
+        message: `User ${getuserName.username} updated product '${product.name}' (${product.uniqueCode})`,
+        entityId: product.id,
+        entityType: 'PRODUCT',
+        userId: req.user.userId
+      }
+    })
+
+    res.json(product,auditLog);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -118,9 +133,21 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    // Note: Deleting a product will fail if inventory items are associated with it.
-    // You must delete or reassign the inventory items first.
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
+   
     await prisma.product.delete({ where: { id } });
+
+    const auditLog = await prisma.auditLog.create({
+      data:{
+        action: 'DELETE',
+        message: `User ${getuserName.username} deleted product with ID ${id}`,
+        entityId: id,
+        entityType: 'PRODUCT',
+        userId: req.user.userId
+      }
+    })
     res.json({ message: 'Product deleted successfully' });
   } catch (err){
     res.status(400).json({ error: err.message });

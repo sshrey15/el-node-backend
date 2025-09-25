@@ -25,6 +25,10 @@ export const createInventoryItem = async (req, res) => {
         categoryId 
     } = req.body;
 
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
+
     // 1. Validate incoming data
     if (!yearOfPurchase || !productId || !categoryId) {
         return res.status(400).json({ error: 'Missing required fields: yearOfPurchase, productId, categoryId' });
@@ -71,7 +75,7 @@ export const createInventoryItem = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data:{
         action: 'CREATE',
-        message: `user ${req.user.username} created inventory item ${inventoryItem.uniqueCode}`,
+        message: `user ${getuserName.username} created inventory item ${inventoryItem.uniqueCode}`,
         entityType: 'INVENTORY_ITEM',
         entityId: inventoryItem.id,
         userId: req.user.userId,
@@ -88,6 +92,9 @@ export const createInventoryItem = async (req, res) => {
 export const updateInventoryItem = async (req, res) => {
   try {
     const { id } = req.params;
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
     const data = req.body;
     const inventoryItem = await prisma.inventoryItem.update({
       where: { id },
@@ -96,7 +103,7 @@ export const updateInventoryItem = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data:{
         action:'UPDATE',
-        message: `user ${req.user.username} updated inventory item ${inventoryItem.uniqueCode}`,
+        message: `user ${getuserName.username} updated inventory item ${inventoryItem.uniqueCode}`,
         entityType: 'INVENTORY_ITEM',
         entityId: inventoryItem.id,
         userId: req.user.userId,
@@ -113,12 +120,15 @@ export const updateInventoryItem = async (req, res) => {
 export const deleteInventoryItem = async (req, res) => {
   try {
     const { id } = req.params;
+      const getuserName = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+    })
     await prisma.inventoryItem.delete({ where: { id } });
 
     const auditLog = await prisma.auditLog.create({
       data:{
         action:'DELETE',
-        message: `user ${req.user.username} deleted inventory item with id ${id}`,
+        message: `user ${getuserName.username} deleted inventory item with id ${id}`,
         entityId: id,
         entityType: 'INVENTORY_ITEM',
         userId: req.user.userId,
