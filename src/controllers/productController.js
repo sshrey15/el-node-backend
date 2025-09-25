@@ -133,27 +133,32 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-      const getuserName = await prisma.user.findUnique({
+
+    const getuserName = await prisma.user.findUnique({
       where: { id: req.user.userId },
     })
-      const productToDelete = await prisma.product.findUnique({
-      where: {id}
+
+    const productToDelete = await prisma.product.findUnique({
+      where: { id }
     })
+
+    if (!productToDelete) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
    
     await prisma.product.delete({ where: { id } });
-
-  
 
     const auditLog = await prisma.auditLog.create({
       data:{
         action: 'DELETE',
-        message: `User ${getuserName.username} deleted product with ID ${productToDelete.name}.`,
+        message: `User ${getuserName.username} deleted product '${productToDelete.name}'.`,
         entityId: id,
         entityType: 'PRODUCT',
         userId: req.user.userId
       }
     })
-    res.json({ message: 'Product deleted successfully' });
+    
+    res.json({ message: 'Product deleted successfully', auditLog });
   } catch (err){
     res.status(400).json({ error: err.message });
   }

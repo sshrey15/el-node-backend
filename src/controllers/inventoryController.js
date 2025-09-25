@@ -135,7 +135,7 @@ export const deleteInventoryItem = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data:{
         action:'DELETE',
-        message: `user ${getuserName.username} deleted inventory item with id ${inventoryItemToDelete.uniqueCode}`,
+        message: `user ${getuserName.username} deleted inventory item with code ${inventoryItemToDelete.uniqueCode}`,
         entityId: id,
         entityType: 'INVENTORY_ITEM',
         userId: req.user.userId,

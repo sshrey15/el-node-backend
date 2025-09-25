@@ -79,7 +79,7 @@ export const deleteDestination = async (req, res) => {
     const auditLog = await prisma.auditLog.create({
       data:{
       action: 'DELETE',
-      message: `User ${getuserName.username} deleted destination with ID ${destinationToDelete.name}`,
+      message: `User ${getuserName.username} deleted destination with name ${destinationToDelete.name}`,
       entityType: 'DESTINATION',
       entityId: id,
       userId: req.user.userId,
