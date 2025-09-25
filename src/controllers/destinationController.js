@@ -70,7 +70,7 @@ export const deleteDestination = async (req, res) => {
       where: { id: req.user.userId },
     })
 
-    const destinationToDelete = await prisma.user.findUnique({
+    const destinationToDelete = await prisma.destination.findUnique({
       where: {id}
     })
     

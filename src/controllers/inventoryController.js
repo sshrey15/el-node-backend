@@ -123,13 +123,14 @@ export const deleteInventoryItem = async (req, res) => {
       const getuserName = await prisma.user.findUnique({
       where: { id: req.user.userId },
     })
-    await prisma.inventoryItem.delete({ where: { id } });
 
-    const inventoryItemToDelete = await prisma.inventoryItem.findUnique({
+        const inventoryItemToDelete = await prisma.inventoryItem.findUnique({
       where: {id}
     }
-
     )
+    await prisma.inventoryItem.delete({ where: { id } });
+
+
 
     const auditLog = await prisma.auditLog.create({
       data:{

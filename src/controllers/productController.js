@@ -136,12 +136,13 @@ export const deleteProduct = async (req, res) => {
       const getuserName = await prisma.user.findUnique({
       where: { id: req.user.userId },
     })
+      const productToDelete = await prisma.product.findUnique({
+      where: {id}
+    })
    
     await prisma.product.delete({ where: { id } });
 
-    const productToDelete = await prisma.product.findUnique({
-      where: {id}
-    })
+  
 
     const auditLog = await prisma.auditLog.create({
       data:{
