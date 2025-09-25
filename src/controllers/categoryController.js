@@ -66,6 +66,19 @@ export const updateCategory = async (req, res) => {
   }
 };
 
+
+export const getCategoryById = async (req,res) =>{
+  try{
+    const {id} = req.params;
+    const category = await prisma.category.findUnique(
+      {where: {id}}
+    )
+    res.json({message: 'Category', category})
+  }catch(err){
+    res.status(400).json({error: err.message})
+  }
+}
+
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,12 +87,21 @@ export const deleteCategory = async (req, res) => {
       where: { id: req.user.userId },
     })
 
+    // Get category details before deletion
+    const categoryToDelete = await prisma.category.findUnique({
+      where: { id }
+    });
+
+    if (!categoryToDelete) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
     await prisma.category.delete({ where: { id } });
 
     const auditLog = await prisma.auditLog.create({
       data: {
         action: 'DELETE',
-        message: `User ${getuserName.username} deleted category with ID ${id}.`,
+        message: `User ${getuserName.username} deleted category '${categoryToDelete.name}'.`,
         entityType: 'CATEGORY',
         entityId: id,
         userId: req.user.userId,
