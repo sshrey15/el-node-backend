@@ -18,7 +18,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000', // Your local development frontend
   'https://el-node-module1.vercel.app', // Your deployed frontend
-  'https://www.elims.in/'
+  'https://www.elims.in'
 ];
 
 // 2. Create CORS options
